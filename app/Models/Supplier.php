@@ -17,6 +17,21 @@ class Supplier extends Model
         'status'
     ];
 
+    // Generate kode supplier otomatis
+    public static function generateCode()
+    {
+        $lastSupplier = self::orderBy('id', 'desc')->first();
+        
+        if (!$lastSupplier) {
+            return 'SUP-001';
+        }
+        
+        $lastNumber = intval(substr($lastSupplier->supplier_code, 4));
+        $newNumber = $lastNumber + 1;
+        
+        return 'SUP-' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);

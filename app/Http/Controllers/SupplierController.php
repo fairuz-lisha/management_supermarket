@@ -7,97 +7,112 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    /**
-     * Tampilkan daftar supplier
-     */
     public function index()
     {
-        // products_count dibuat otomatis oleh withCount()
-        $suppliers = Supplier::withCount('products')->paginate(10);
-
+        $suppliers = Supplier::withCount('products')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
         return view('admin.suppliers.index', compact('suppliers'));
     }
 
-    /**
-     * Form tambah supplier
-     */
     public function create()
     {
-        return view('admin.suppliers.create');
+        // Generate kode supplier baru
+        $supplierCode = Supplier::generateCode();
+        
+        return view('admin.suppliers.create', compact('supplierCode'));
     }
 
-    /**
-     * Simpan supplier baru
-     */
     public function store(Request $request)
     {
-        // 🔒 VALIDASI (HARUS SAMA DENGAN DATABASE & FORM)
+        // Validasi
         $validated = $request->validate([
+            'supplier_code' => 'required|string|unique:suppliers,supplier_code|max:20',
             'supplier_name' => 'required|string|max:255',
-            'contact_name'  => 'required|string|max:255',
-            'no_telephone'  => 'required|string|max:20',
-            'email'         => 'nullable|email',
-            'address'       => 'required|string',
-            'city'          => 'required|string|max:100',
-            'status'        => 'required|in:aktif,nonaktif',
+            'contact_name' => 'nullable|string|max:255',
+            'no_telephone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string',
+            'city' => 'nullable|string|max:100',
+            'status' => 'required|in:aktif,nonaktif'
+        ], [
+            'supplier_code.required' => 'Kode supplier harus diisi',
+            'supplier_code.unique' => 'Kode supplier sudah digunakan',
+            'supplier_name.required' => 'Nama supplier harus diisi',
+            'no_telephone.required' => 'Nomor telepon harus diisi',
+            'address.required' => 'Alamat harus diisi',
+            'status.required' => 'Status harus dipilih',
+            'email.email' => 'Format email tidak valid'
         ]);
 
-        // 🔥 AUTO GENERATE SUPPLIER CODE
-        $lastSupplier = Supplier::orderBy('id', 'desc')->first();
+        try {
+            Supplier::create($validated);
 
-        $number = $lastSupplier
-            ? intval(substr($lastSupplier->supplier_code, 3)) + 1
-            : 1;
-
-        $validated['supplier_code'] = 'SUP' . str_pad($number, 4, '0', STR_PAD_LEFT);
-
-        // ✅ SIMPAN KE DATABASE
-        Supplier::create($validated);
-
-        return redirect()
-            ->route('admin.suppliers.index')
-            ->with('success', 'Supplier berhasil ditambahkan');
+            return redirect()->route('admin.suppliers.index')
+                ->with('success', 'Supplier berhasil ditambahkan!');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menambahkan supplier: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Form edit supplier
-     */
     public function edit(Supplier $supplier)
     {
         return view('admin.suppliers.edit', compact('supplier'));
     }
 
-    /**
-     * Update supplier
-     */
     public function update(Request $request, Supplier $supplier)
     {
+        // Validasi (kode supplier tidak boleh diubah)
         $validated = $request->validate([
             'supplier_name' => 'required|string|max:255',
-            'contact_name'  => 'required|string|max:255',
-            'no_telephone'  => 'required|string|max:20',
-            'email'         => 'nullable|email',
-            'address'       => 'required|string',
-            'city'          => 'required|string|max:100',
-            'status'        => 'required|in:aktif,nonaktif',
+            'contact_name' => 'nullable|string|max:255',
+            'no_telephone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'required|string',
+            'city' => 'nullable|string|max:100',
+            'status' => 'required|in:aktif,nonaktif'
+        ], [
+            'supplier_name.required' => 'Nama supplier harus diisi',
+            'no_telephone.required' => 'Nomor telepon harus diisi',
+            'address.required' => 'Alamat harus diisi',
+            'status.required' => 'Status harus dipilih',
+            'email.email' => 'Format email tidak valid'
         ]);
 
-        $supplier->update($validated);
+        try {
+            $supplier->update($validated);
 
-        return redirect()
-            ->route('admin.suppliers.index')
-            ->with('success', 'Supplier berhasil diperbarui');
+            return redirect()->route('admin.suppliers.index')
+                ->with('success', 'Supplier berhasil diperbarui!');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui supplier: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Hapus supplier
-     */
     public function destroy(Supplier $supplier)
     {
-        $supplier->delete();
-
-        return redirect()
-            ->route('admin.suppliers.index')
-            ->with('success', 'Supplier berhasil dihapus');
+        try {
+            // Cek apakah supplier punya produk
+            if ($supplier->products()->count() > 0) {
+                return redirect()->back()
+                    ->with('error', 'Tidak dapat menghapus supplier karena masih memiliki produk terkait!');
+            }
+            
+            $supplier->delete();
+            
+            return redirect()->route('admin.suppliers.index')
+                ->with('success', 'Supplier berhasil dihapus!');
+                
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Gagal menghapus supplier: ' . $e->getMessage());
+        }
     }
 }
