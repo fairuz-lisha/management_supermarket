@@ -10,12 +10,12 @@ return new class extends Migration {
         Schema::table('suppliers', function (Blueprint $table) {
 
             // RENAME name -> supplier_name
-            if (Schema::hasColumn('suppliers', 'name')) {
+            if (Schema::hasColumn('suppliers', 'name') && !Schema::hasColumn('suppliers', 'supplier_name')) {
                 $table->renameColumn('name', 'supplier_name');
             }
 
             // RENAME phone -> no_telephone
-            if (Schema::hasColumn('suppliers', 'phone')) {
+            if (Schema::hasColumn('suppliers', 'phone') && !Schema::hasColumn('suppliers', 'no_telephone')) {
                 $table->renameColumn('phone', 'no_telephone');
             }
         });
@@ -24,8 +24,15 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('suppliers', function (Blueprint $table) {
-            $table->renameColumn('supplier_name', 'name');
-            $table->renameColumn('no_telephone', 'phone');
+            // Revert RENAME supplier_name -> name
+            if (Schema::hasColumn('suppliers', 'supplier_name') && !Schema::hasColumn('suppliers', 'name')) {
+                $table->renameColumn('supplier_name', 'name');
+            }
+            
+            // Revert RENAME no_telephone -> phone
+            if (Schema::hasColumn('suppliers', 'no_telephone') && !Schema::hasColumn('suppliers', 'phone')) {
+                $table->renameColumn('no_telephone', 'phone');
+            }
         });
     }
 };

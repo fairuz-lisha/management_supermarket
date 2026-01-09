@@ -89,7 +89,7 @@
                         <p class="text-sm text-gray-600 mb-3">{{ Str::limit($product->description, 60) }}</p>
                         
                         <div class="flex justify-between items-center mb-3">
-                            <span class="text-2xl font-bold text-green-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                            <span class="text-2xl font-bold text-green-600">Rp {{ number_format($product->sale_price, 0, ',', '.') }}</span>
                             <span class="text-sm text-gray-500">Stok: {{ $product->stock }}</span>
                         </div>
                         

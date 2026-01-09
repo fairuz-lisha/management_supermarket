@@ -55,8 +55,8 @@ class ShopController extends Controller
             $cart[$product->id]['quantity'] += $request->quantity;
         } else {
             $cart[$product->id] = [
-                'name' => $product->name,
-                'price' => $product->price,
+                'name' => $product->product_name,
+                'price' => $product->sale_price,
                 'quantity' => $request->quantity,
                 'image' => $product->image
             ];

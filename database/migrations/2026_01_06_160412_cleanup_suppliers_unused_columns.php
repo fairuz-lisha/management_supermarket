@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::table('suppliers', function (Blueprint $table) {
 
-            // kolom lama yang sering bikin konflik
+            // Hapus kolom lama yang sering bikin konflik, jika ada
             if (Schema::hasColumn('suppliers', 'name')) {
                 $table->dropColumn('name');
             }
@@ -30,6 +30,10 @@ return new class extends Migration {
 
     public function down(): void
     {
-        // tidak perlu rollback, ini migration pembersihan
+        Schema::table('suppliers', function (Blueprint $table) {
+            // Kita tidak bisa dengan mudah mengembalikan kolom yang sudah dihapus 
+            // tanpa mengetahui tipe data aslinya, jadi fungsi down bisa dibiarkan kosong 
+            // atau tambahkan komentar seperti ini.
+        });
     }
 };
