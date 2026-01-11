@@ -21,6 +21,20 @@ class Product extends Model
         'status'
     ];
 
+    public static function generateCode()
+    {
+        $lastProduct = self::orderBy('id', 'desc')->first();
+        
+        if (!$lastProduct) {
+            return 'PRD-0001';
+        }
+        
+        $lastNumber = intval(substr($lastProduct->product_code, 4));
+        $newNumber = $lastNumber + 1;
+        
+        return 'PRD-' . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

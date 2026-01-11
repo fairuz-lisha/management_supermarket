@@ -15,7 +15,8 @@ class CategoryController extends Controller
 
     public function create()
     {
-        return view('admin.categories.create');
+        $categoryCode = Category::generateCode();
+        return view('admin.categories.create', compact('categoryCode'));
     }
 
     public function store(Request $request)
