@@ -23,7 +23,8 @@ class DashboardController extends Controller
             $totalCategories = Category::count();
             $totalSuppliers = Supplier::count();
             $totalTransactions = Transaction::count();
-            $totalRevenue = Transaction::sum('total') ?? 0;
+            // Use existing column 'total_payment' (migrations renamed/removed 'total')
+            $totalRevenue = Transaction::sum('total_payment') ?? 0;
             $lowStock = Product::where('stock', '<', 10)->count();
             
             $recentTransactions = Transaction::with('details.product')
@@ -43,8 +44,9 @@ class DashboardController extends Controller
             ));
 
         } catch (\Exception $e) {
-            return redirect()->route('admin.login')
-                ->with('error', 'Database error: ' . $e->getMessage());
+            // Log the database error and show a 500 page instead of redirecting to login
+            \Illuminate\Support\Facades\Log::error('DashboardController index database error: ' . $e->getMessage());
+            abort(500, 'Database error: ' . $e->getMessage());
         }
     }
 }

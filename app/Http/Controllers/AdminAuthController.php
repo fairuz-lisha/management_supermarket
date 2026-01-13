@@ -11,7 +11,17 @@ class AdminAuthController extends Controller
     public function showLogin()
     {
         // Jika sudah login, redirect ke dashboard
-        if (Auth::guard('admin')->check()) {
+        try {
+            $guardCheck = Auth::guard('admin')->check();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('AdminAuthController showLogin guard check failed: ' . $e->getMessage());
+            $guardCheck = false;
+        }
+
+        \Illuminate\Support\Facades\Log::info('AdminAuthController showLogin: guard_check', ['guard_check' => $guardCheck, 'session_id' => session()->getId()]);
+
+        if ($guardCheck) {
+            \Illuminate\Support\Facades\Log::info('AdminAuthController showLogin redirecting to dashboard');
             return redirect()->route('admin.dashboard');
         }
 
@@ -34,9 +44,6 @@ class AdminAuthController extends Controller
         // Coba login
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            
-            return redirect()->route('admin.dashboard')
-                ->with('success', 'Selamat datang, ' . Auth::guard('admin')->user()->name);
         }
 
         // Jika gagal

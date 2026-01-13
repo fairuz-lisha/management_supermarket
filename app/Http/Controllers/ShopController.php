@@ -139,21 +139,25 @@ class ShopController extends Controller
             }
 
             $discount = 0;
+            $discountPercent = 0;
             if ($subtotal > 100000) {
+                $discountPercent = 10;
                 $discount = $subtotal * 0.1;
             }
 
             $total = $subtotal - $discount;
 
             $transaction = Transaction::create([
-                'transaction_code' => Transaction::generateCode(),
+                'invoice_number' => Transaction::generateCode(),
                 'customer_name' => $request->customer_name,
                 'customer_address' => $request->customer_address,
                 'customer_phone' => $request->customer_phone,
                 'payment_method' => $request->payment_method,
                 'subtotal' => $subtotal,
-                'discount' => $discount,
-                'total' => $total,
+                'discount_persent' => $discountPercent,
+                'discount_amount' => $discount,
+                'total_payment' => $total,
+                'amount_received' => $request->input('amount_received', $total),
                 'status' => 'completed'
             ]);
 

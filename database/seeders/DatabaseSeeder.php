@@ -242,7 +242,7 @@ class DatabaseSeeder extends Seeder
             ]));
         }
 
-        $this->command->info(count($products) . ' Products created!');
+        $this->command->info(count($products) . ' Products created!');  
         $this->command->info('');
     }
 }

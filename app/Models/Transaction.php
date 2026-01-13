@@ -8,8 +8,8 @@ class Transaction extends Model
 {
     protected $fillable = [
         'invoice_number',
-        'transaction_date',
         'customer_name',
+        'customer_address',
         'customer_phone',
         'subtotal',
         'discount_persent',
@@ -25,6 +25,17 @@ class Transaction extends Model
     public function details()
     {
         return $this->hasMany(TransactionDetail::class);
+    }
+
+    // Backwards-compatible accessors for legacy view fields
+    public function getTotalAttribute()
+    {
+        return $this->attributes['total_payment'] ?? 0;
+    }
+
+    public function getTransactionCodeAttribute()
+    {
+        return $this->attributes['invoice_number'] ?? ($this->attributes['id'] ?? null);
     }
 
     public static function generateCode()

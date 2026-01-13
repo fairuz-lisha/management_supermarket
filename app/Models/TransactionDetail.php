@@ -11,10 +11,17 @@ class TransactionDetail extends Model
         'product_id',
         'product_code',
         'product_name',
+        'price',
         'unit_price',
         'quantity',
         'subtotal'
     ];
+
+    // Backwards-compatible accessor
+    public function getUnitPriceAttribute()
+    {
+        return $this->attributes['price'] ?? null;
+    }
 
     public function transaction()
     {
