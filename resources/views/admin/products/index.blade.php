@@ -40,10 +40,14 @@
                 <td>{{ $p->stock }}</td>
                 <td>{{ $p->status }}</td>
                 <td class="flex gap-2">
-                    <a href="{{ route('admin.products.edit', $p) }}">✏️</a>
+                    <a href="{{ route('admin.products.edit', $p) }}">
+                        <i class="fas fa-edit text-blue-600 hover:text-blue-800"></i>
+                    </a>
                     <form action="{{ route('admin.products.destroy', $p) }}" method="POST">
                         @csrf @method('DELETE')
-                        <button onclick="return confirm('Hapus?')">🗑</button>
+                        <button onclick="return confirm('Hapus?')">
+                            <i class="fas fa-trash text-red-600 hover:text-red-800"></i>
+                        </button>
                     </form>
                 </td>
             </tr>

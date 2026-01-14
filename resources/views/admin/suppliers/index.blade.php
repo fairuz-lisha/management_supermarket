@@ -53,7 +53,7 @@
                             {{ $supplier->products_count }} produk
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-center">
+                    <td class="flex gap-2">
                         <a href="{{ route('admin.suppliers.edit', $supplier) }}" 
                            class="text-blue-600 hover:text-blue-700 mr-3"
                            title="Edit">

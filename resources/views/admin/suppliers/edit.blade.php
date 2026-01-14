@@ -159,8 +159,8 @@
             </div>
             
             <div class="flex space-x-3">
-                <button type="submit" class="btn-primary text-white px-6 py-3 rounded-lg hover:shadow-lg transition">
-                    <i class="fas fa-save mr-2"></i>Update
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition">
+                    <i class="fas fa-edit mr-2"></i>Update
                 </button>
                 <a href="{{ route('admin.suppliers.index') }}" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition">
                     <i class="fas fa-arrow-left mr-2"></i>Kembali

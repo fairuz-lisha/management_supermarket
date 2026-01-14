@@ -45,11 +45,11 @@
                     {{ $category->description ?? '-' }}
                 </td>
 
-                <td class="px-6 py-4 text-center space-x-3">
+                <td class="flex gap-2">
                     <!-- EDIT -->
                     <a href="{{ route('admin.categories.edit', $category) }}"
                        class="text-blue-600 hover:text-blue-800">
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-edit mr-2"></i>
                     </a>
 
                     <!-- DELETE -->

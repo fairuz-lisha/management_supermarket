@@ -49,7 +49,7 @@
                 @foreach($categories as $cat)
                 <a href="{{ route('shop.index', ['category' => $cat->id]) }}" 
                     class="block py-2 px-4 mb-2 rounded {{ request('category') == $cat->id ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
-                    <i class="fas fa-tag mr-2"></i>{{ $cat->name }}
+                    <i class="fas fa-tag mr-2"></i>{{ $cat->category_name }}
                     <span class="text-sm text-gray-500">({{ $cat->products_count }})</span>
                 </a>
                 @endforeach
@@ -85,7 +85,7 @@
                     
                     <div class="p-4">
                         <span class="text-xs text-green-600 font-semibold">{{ $product->category->name }}</span>
-                        <h3 class="font-bold text-lg text-gray-800 mt-1 mb-2">{{ $product->name }}</h3>
+                        <h3 class="font-bold text-lg text-gray-800 mt-1 mb-2">{{ $product->product_name }}</h3>
                         <p class="text-sm text-gray-600 mb-3">{{ Str::limit($product->description, 60) }}</p>
                         
                         <div class="flex justify-between items-center mb-3">
@@ -99,7 +99,7 @@
                             <div class="flex gap-2">
                                 <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}"
                                     class="w-20 px-3 py-2 border border-gray-300 rounded-lg text-center">
-                                <button type="submit" class="flex-1 btn-primary py-2 px-4 rounded-lg font-semibold">
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition">
                                     <i class="fas fa-cart-plus mr-2"></i>Tambah
                                 </button>
                             </div>

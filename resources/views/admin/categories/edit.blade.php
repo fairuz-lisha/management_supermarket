@@ -29,9 +29,14 @@
                     class="w-full border rounded-lg px-4 py-3">{{ old('description', $category->description) }}</textarea>
             </div>
 
-            <button type="submit" class="btn-primary px-6 py-3 text-white rounded-lg">
-                Update
-            </button>
+            <div class="fles space-x-3">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition">
+                    <i class="fas fa-edit mr-2"></i>Update
+                </button>
+                <a href="{{ route('admin.categories.index') }}" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali
+                </a>
+            </div>
         </form>
     </div>
 </div>

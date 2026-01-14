@@ -57,12 +57,6 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-6 text-center text-gray-600">
-                <p class="text-sm">Demo Login:</p>
-                <p class="text-xs">Admin: admin@supermarket.com / admin123</p>
-                <p class="text-xs">Kasir: kasir@supermarket.com / kasir123</p>
-            </div>
         </div>
     </div>
 </body>
