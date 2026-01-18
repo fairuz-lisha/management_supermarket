@@ -33,6 +33,7 @@ class DashboardController extends Controller
                 ->get();
             
             $topProducts = Product::withCount('transactionDetails')
+                ->withSum('transactionDetails', 'quantity')
                 ->orderBy('transaction_details_count', 'desc')
                 ->take(5)
                 ->get();

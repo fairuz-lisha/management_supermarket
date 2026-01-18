@@ -63,7 +63,7 @@
                     <tbody class="divide-y divide-gray-200">
                         @foreach($transaction->details as $detail)
                         <tr>
-                            <td class="px-4 py-3 font-semibold">{{ $detail->product->name }}</td>
+                            <td class="px-4 py-3 font-semibold">{{ $detail->product->product_name }}</td>
                             <td class="px-4 py-3">Rp {{ number_format($detail->price, 0, ',', '.') }}</td>
                             <td class="px-4 py-3 text-center">{{ $detail->quantity }}</td>
                             <td class="px-4 py-3 text-right font-semibold text-green-600">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>

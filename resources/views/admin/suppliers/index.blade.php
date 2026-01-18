@@ -5,7 +5,8 @@
 
 @section('content')
 <div class="mb-6">
-    <a href="{{ route('admin.suppliers.create') }}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition">
+    <a href="{{ route('admin.suppliers.create') }}" 
+    class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition">
         <i class="fas fa-plus mr-2"></i>Tambah Supplier
     </a>
 </div>

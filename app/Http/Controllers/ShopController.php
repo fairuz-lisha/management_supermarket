@@ -14,18 +14,18 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $query = Product::with('category')->where('stock', '>', 0);
-        
+
         if ($request->has('category')) {
             $query->where('category_id', $request->category);
         }
-        
+
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-        
+
         $products = $query->paginate(12);
         $categories = Category::withCount('products')->get();
-        
+
         return view('shop.index', compact('products', 'categories'));
     }
 
@@ -33,24 +33,24 @@ class ShopController extends Controller
     {
         $cart = session()->get('cart', []);
         $total = 0;
-        
+
         foreach ($cart as $item) {
             $total += $item['price'] * $item['quantity'];
         }
-        
+
         return view('shop.cart', compact('cart', 'total'));
     }
 
     public function addToCart(Request $request)
     {
         $product = Product::findOrFail($request->product_id);
-        
+
         if ($product->stock < $request->quantity) {
             return back()->with('error', 'Stok tidak mencukupi!');
         }
-        
+
         $cart = session()->get('cart', []);
-        
+
         if (isset($cart[$product->id])) {
             $cart[$product->id]['quantity'] += $request->quantity;
         } else {
@@ -61,121 +61,165 @@ class ShopController extends Controller
                 'image' => $product->image
             ];
         }
-        
+
         session()->put('cart', $cart);
-        
+
         return back()->with('success', 'Produk ditambahkan ke keranjang!');
     }
 
     public function updateCart(Request $request, $id)
     {
         $cart = session()->get('cart');
-        
+
         if (isset($cart[$id])) {
             $cart[$id]['quantity'] = $request->quantity;
             session()->put('cart', $cart);
         }
-        
+
         return back()->with('success', 'Keranjang diperbarui!');
     }
 
     public function removeFromCart($id)
     {
         $cart = session()->get('cart');
-        
+
         if (isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
         }
-        
+
         return back()->with('success', 'Produk dihapus dari keranjang!');
     }
 
     public function checkout()
     {
         $cart = session()->get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('shop.index')->with('error', 'Keranjang kosong!');
         }
-        
+
+        // Hitung total item (quantity)
+        $totalItems = 0;
         $subtotal = 0;
+
         foreach ($cart as $item) {
+            $totalItems += $item['quantity'];
             $subtotal += $item['price'] * $item['quantity'];
         }
-        
-        // Hitung diskon (misal: diskon 10% jika belanja > 100000)
-        $discount = 0;
-        if ($subtotal > 100000) {
-            $discount = $subtotal * 0.1;
+
+        // Tentukan diskon berdasarkan jumlah item
+        $discountPercent = 0;
+        $discountMessage = '';
+
+        if ($totalItems >= 10) {
+            $discountPercent = 15;
+            $discountMessage = 'Selamat! Anda mendapat diskon 15% (belanja ≥ 10 item)';
+        } elseif ($totalItems >= 5) {
+            $discountPercent = 10;
+            $discountMessage = 'Selamat! Anda mendapat diskon 10% (belanja 5-9 item)';
+        } elseif ($totalItems >= 3) {
+            $discountPercent = 5;
+            $discountMessage = 'Anda mendapat diskon 5% (belanja 3-4 item)';
+        } else {
+            $discountMessage = 'Belanja min. 3 item untuk dapat diskon 5%';
         }
-        
-        $total = $subtotal - $discount;
-        
-        return view('shop.checkout', compact('cart', 'subtotal', 'discount', 'total'));
+
+        $discountAmount = $subtotal * ($discountPercent / 100);
+        $total = $subtotal - $discountAmount;
+
+        return view('shop.checkout', compact(
+            'cart',
+            'totalItems',
+            'subtotal',
+            'discountPercent',
+            'discountAmount',
+            'total',
+            'discountMessage'
+        ));
     }
 
     public function processCheckout(Request $request)
     {
         $request->validate([
             'customer_name' => 'required|string|max:255',
-            'customer_address' => 'required|string',
             'customer_phone' => 'required|string|max:20',
+            'customer_address' => 'required|string',
             'payment_method' => 'required|in:cash,transfer,e-wallet'
         ]);
 
         $cart = session()->get('cart', []);
-        
+
         if (empty($cart)) {
             return redirect()->route('shop.index')->with('error', 'Keranjang kosong!');
         }
 
         DB::beginTransaction();
-        
+
         try {
+            // Hitung total item dan subtotal
+            $totalItems = 0;
             $subtotal = 0;
+            
             foreach ($cart as $item) {
+                $totalItems += $item['quantity'];
                 $subtotal += $item['price'] * $item['quantity'];
             }
 
-            $discount = 0;
+            // Tentukan diskon berdasarkan jumlah item
             $discountPercent = 0;
-            if ($subtotal > 100000) {
+            
+            if ($totalItems >= 10) {
+                $discountPercent = 15;
+            } elseif ($totalItems >= 5) {
                 $discountPercent = 10;
-                $discount = $subtotal * 0.1;
+            } elseif ($totalItems >= 3) {
+                $discountPercent = 5;
             }
 
-            $total = $subtotal - $discount;
+            $discountAmount = $subtotal * ($discountPercent / 100);
+            $totalPayment = $subtotal - $discountAmount;
 
+            // Generate invoice number
+            $invoiceNumber = Transaction::generateCode();
+
+            // Create transaction
             $transaction = Transaction::create([
-                'invoice_number' => Transaction::generateCode(),
+                'invoice_number' => $invoiceNumber,
+                'transaction_date' => now()->toDateString(),
                 'customer_name' => $request->customer_name,
-                'customer_address' => $request->customer_address,
                 'customer_phone' => $request->customer_phone,
-                'payment_method' => $request->payment_method,
+                'customer_address' => $request->customer_address,
                 'subtotal' => $subtotal,
                 'discount_persent' => $discountPercent,
-                'discount_amount' => $discount,
-                'total_payment' => $total,
-                'amount_received' => $request->input('amount_received', $total),
-                'status' => 'completed'
+                'discount_amount' => $discountAmount,
+                'total_payment' => $totalPayment,
+                'amount_received' => $totalPayment,
+                'change' => 0,
+                'payment_method' => $request->payment_method,
+                'status' => 'completed',
             ]);
 
+            // Create transaction details
             foreach ($cart as $productId => $item) {
                 $product = Product::findOrFail($productId);
                 
                 if ($product->stock < $item['quantity']) {
-                    throw new \Exception("Stok {$product->name} tidak mencukupi!");
+                    throw new \Exception("Stok {$product->product_name} tidak mencukupi!");
                 }
 
                 TransactionDetail::create([
                     'transaction_id' => $transaction->id,
                     'product_id' => $productId,
+                    'product_code' => $product->product_code,
+                    'product_name' => $product->product_name,
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
+                    'unit_price' => $item['price'],
                     'subtotal' => $item['price'] * $item['quantity']
                 ]);
 
+                // Kurangi stok
                 $product->decrement('stock', $item['quantity']);
             }
 
@@ -187,7 +231,7 @@ class ShopController extends Controller
             
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', 'Gagal memproses checkout: ' . $e->getMessage());
         }
     }
 

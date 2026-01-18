@@ -19,7 +19,6 @@ class Transaction extends Model
         'change',
         'payment_method',
         'status',
-        'notes',
     ];
 
     public function details()
@@ -40,6 +39,6 @@ class Transaction extends Model
 
     public static function generateCode()
     {
-        return 'TRX' . date('YmdHis') . rand(100, 999);
+        return 'TRX' . date('YmdHi');
     }
 }

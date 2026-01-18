@@ -206,7 +206,7 @@ class DatabaseSeeder extends Seeder
 
         $products = [
             [
-                'category_id' => 1,
+                'category_id' => 2,
                 'supplier_id' => 1,
                 'product_code' => 'PRD-001',
                 'product_name' => 'Ultra Milk UHT 250 ml',
@@ -217,7 +217,7 @@ class DatabaseSeeder extends Seeder
                 'minimum_stock' => 30,
                 'unit' => 'pcs',
                 'status' => 'aktif',
-                'image' => 'products/Ultra Milk Coklat.jpg'
+                'image' => 'products/Ultra Milk.jpg'
             ],
             [
                 'category_id' => 2,
@@ -229,9 +229,39 @@ class DatabaseSeeder extends Seeder
                 'sale_price' => 6500,
                 'stock' => 150,
                 'minimum_stock' => 30,
-                'unit' => 'bottle',
+                'unit' => 'pcs',
                 'status' => 'aktif',
                 'image' => 'products/Olatte.jpg'
+            ],
+
+            [
+                'category_id' => 2,
+                'supplier_id' => 2,
+                'product_code' => 'PRD-003',
+                'product_name' => 'Cimory Yogurt Drink',
+                'description' => 'Cimory Yogurt Drink merupakan minuman yogurt yang terbuat dari susu segar pilihan dan kultur probiotik.',
+                'purchase_price' => 7500,
+                'sale_price' => 8500,
+                'stock' => 1500,
+                'minimum_stock' => 30,
+                'unit' => 'pcs',
+                'status' => 'aktif',
+                'image' => 'products/Cimory Yogurt Drink.jpg'
+            ],
+
+            [
+                'category_id' => 2,
+                'supplier_id' => 4,
+                'product_code' => 'PRD-004',
+                'product_name' => 'Yakult',
+                'description' => 'Yakult merupakan minuman probiotik yang mengandung bakteri baik Lactobacillus casei Shirota strain.',
+                'purchase_price' => 3000,
+                'sale_price' => 4500,
+                'stock' => 1500,
+                'minimum_stock' => 30,
+                'unit' => 'pcs',
+                'status' => 'aktif',
+                'image' => 'products/Yakult.jpg'
             ],
         ];
 

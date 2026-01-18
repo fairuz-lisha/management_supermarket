@@ -33,7 +33,7 @@
                             </label>
                             <input type="email" name="email" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-                                placeholder="admin@freshmart.com">
+                                placeholder="admin.supermarket@gmail.com">
                         </div>
                         
                         <div class="mb-6">
@@ -42,7 +42,7 @@
                             </label>
                             <input type="password" name="password" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-                                placeholder="••••••••">
+                                placeholder="••••••••••">
                         </div>
                         
                         <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition transform hover:scale-105">

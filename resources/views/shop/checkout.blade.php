@@ -104,7 +104,7 @@
                     
                     <div class="space-y-3 mb-4 max-h-60 overflow-y-auto">
                         @foreach($cart as $item)
-                        <div class="flex justify-between text-sm">
+                        <div class="flex justify-between text-gray-600">
                             <span class="text-gray-600">{{ $item['name'] }} x{{ $item['quantity'] }}</span>
                             <span class="font-semibold">Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}</span>
                         </div>
@@ -117,10 +117,10 @@
                             <span class="font-semibold">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
                         </div>
                         
-                        @if($discount > 0)
+                        @if($discountPercent > 0)
                         <div class="flex justify-between text-green-600">
-                            <span>Diskon (10%)</span>
-                            <span class="font-semibold">- Rp {{ number_format($discount, 0, ',', '.') }}</span>
+                            <span>Diskon ({{ $discountPercent }}%)</span>
+                            <span class="font-semibold">- Rp {{ number_format($discountAmount, 0, ',', '.') }}</span>
                         </div>
                         @endif
                         
@@ -130,11 +130,11 @@
                         </div>
                     </div>
                     
-                    <button type="submit" class="w-full btn-primary py-3 rounded-lg font-semibold">
+                    <button type="submit" class="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-center py-3 rounded-lg font-semibold shadow-lg transition transform hover:scale-105">
                         <i class="fas fa-check-circle mr-2"></i>Selesaikan Pesanan
                     </button>
                     
-                    <a href="{{ route('shop.cart') }}" class="block w-full text-center py-3 mt-3 text-gray-600 hover:text-gray-700 transition">
+                    <a href="{{ route('shop.cart') }}" class="block w-full text-center py-3 mt-3 text-green-600 hover:text-gray-700 transition">
                         <i class="fas fa-arrow-left mr-2"></i>Kembali ke Keranjang
                     </a>
                 </div>

@@ -81,7 +81,7 @@
                 <i class="fas fa-print mr-2"></i>Cetak Nota
             </button>
             
-            <a href="{{ route('shop.index') }}" class="inline-block btn-primary px-6 py-3 rounded-lg">
+            <a href="{{ route('shop.index') }}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition">
                 <i class="fas fa-home mr-2"></i>Kembali ke Beranda
             </a>
         </div>

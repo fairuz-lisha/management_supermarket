@@ -58,16 +58,6 @@
         </div>
     </div>
     @endif
-    
-    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
-        <div class="flex items-center">
-            <i class="fas fa-info-circle text-3xl text-blue-500 mr-4"></i>
-            <div>
-                <h4 class="font-bold text-blue-800 text-lg">Sistem Normal</h4>
-                <p class="text-blue-700">Semua sistem berjalan dengan baik</p>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="grid md:grid-cols-2 gap-6">
@@ -104,11 +94,11 @@
             @forelse($topProducts as $product)
             <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
                 <div class="flex-1">
-                    <p class="font-semibold text-gray-800">{{ $product->name }}</p>
-                    <p class="text-sm text-gray-600">{{ $product->category->name }}</p>
+                    <p class="font-semibold text-gray-800">{{ $product->product_name }}</p>
+                    <p class="text-sm text-gray-600">{{ $product->category->category_name }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="font-bold text-green-600">{{ $product->transaction_details_count }} terjual</p>
+                    <p class="font-bold text-green-600">{{ $product->transaction_details_sum_quantity ?? 0}} terjual</p>
                     <p class="text-xs text-gray-500">Stok: {{ $product->stock }}</p>
                 </div>
             </div>
